@@ -18,7 +18,7 @@ class Blackjack {
         $deck->shuffle();
         $this->deck = $deck;
         $this->player = new Player($this->deck);
-        $this->dealer = new Player($this->deck);
+        $this->dealer = new Dealer($this->deck);
     }
 
     /**
@@ -44,7 +44,6 @@ class Blackjack {
     {
         return $this->deck;
     }
-
 
     public function outPut() {
         $scorePlayer = 0;

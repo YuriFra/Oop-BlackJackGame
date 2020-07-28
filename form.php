@@ -11,7 +11,7 @@
 <body>
 <div class="container">
     <header>
-        <h1 class="">BlackJack Game"</h1>
+        <h1 class="">BlackJack Game</h1>
     </header>
 
     <nav>
