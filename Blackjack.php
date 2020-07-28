@@ -37,6 +37,15 @@ class Blackjack {
         return $this->dealer;
     }
 
+    /**
+     * @return Deck|object
+     */
+    public function getDeck()
+    {
+        return $this->deck;
+    }
+
+
     public function outPut() {
         $scorePlayer = 0;
         $scoreDealer = 0;

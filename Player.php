@@ -25,11 +25,24 @@ class Player {
     }
 
     public function Hit() {
-
+        $this->cards[] = $_SESSION['game']->getDeck()->drawCard();
+        if ($_SESSION['game']->getPlayer()->getScore() > 21) {
+            $this->lost = true;
+        }
+    }
+    public function Surrender() {
+        $this->lost = true;
+    }
+    public function getScore() {
+    $score = 0;
+    $cards = $_SESSION['game']->getPlayer()->getCards();
+    foreach ($cards as $card) {
+        $score += $card->getValue();
+    }
+}
+    public function hasLost() {
+        return $this->lost;
     }
 
-    public function hasLost() {}
-    public function Surrender() {}
-    public function getScore() {}
 
 }
