@@ -9,14 +9,25 @@ class Player {
      * Player constructor.
      * @param array $cards
      */
-    public function __construct(array $cards)
+    public function __construct(Deck $deck)
     {
-        $this->cards = $cards;
+        for($i = 0; $i < 2; $i++) {
+            $this->cards[] = $deck->drawCard();
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getCards(): array
+    {
+        return $this->cards;
+    }
+
+    public function Hit() {
 
     }
 
-
-    public function Hit() {}
     public function hasLost() {}
     public function Surrender() {}
     public function getScore() {}
