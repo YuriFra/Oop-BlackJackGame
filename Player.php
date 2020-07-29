@@ -24,17 +24,17 @@ class Player {
         return $this->cards;
     }
 
-    public function Hit() {
+    public function Hit() : void {
         $this->cards[] = $_SESSION['game']->getDeck()->drawCard();
         $scorePlayer = $_SESSION['game']->getPlayer()->getScore()[0];
         if ($scorePlayer > 21) {
             $this->lost = true;
         }
     }
-    public function Surrender() {
+    public function Surrender() : void {
         $this->lost = true;
     }
-    public function getScore() {
+    public function getScore() : array {
         $scorePlayer = 0;
         $cards = $_SESSION['game']->getPlayer()->getCards();
         foreach ($cards as $card) {
@@ -47,24 +47,15 @@ class Player {
         }
         return [$scorePlayer, $scoreDealer];
     }
-    public function hasLost() {
+    public function hasLost() : bool {
         return ($this->lost);
     }
 }
 
 class Dealer extends Player {
-    public function Hit()
-    {
+    public function Hit() : void {
         while ($_SESSION['game']->getDealer()->getScore()[1] < 15) {
             parent::Hit();
-        }
-        if ($_SESSION['game']->getDealer()->getScore()[1] > 21 && $_SESSION['game']->getPlayer()->getScore()[0] > 21) {
-            $_SESSION['game']->getPlayer()->Surrender();
-        } elseif ($_SESSION['game']->getDealer()->getScore()[1] <= 21 && $_SESSION['game']->getDealer()->getScore()[1] >= $_SESSION['game']->getPlayer()->getScore()[0]) {
-            $_SESSION['game']->getPlayer()->Surrender();
-        } else {
-            echo "You win <a href='index.php'>Play again</a>";
-            session_destroy();
         }
     }
 }

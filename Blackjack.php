@@ -12,8 +12,7 @@ class Blackjack {
      * @param object $dealer
      * @param object $deck
      */
-    public function __construct()
-    {
+    public function __construct() {
         $deck = new Deck();
         $deck->shuffle();
         $this->deck = $deck;
@@ -24,44 +23,21 @@ class Blackjack {
     /**
      * @return string
      */
-    public function getPlayer(): object
-    {
+    public function getPlayer(): object {
         return $this->player;
     }
 
     /**
      * @return string
      */
-    public function getDealer(): object
-    {
+    public function getDealer(): object {
         return $this->dealer;
     }
 
     /**
      * @return Deck|object
      */
-    public function getDeck()
-    {
+    public function getDeck() : object {
         return $this->deck;
     }
-
-    public function outPut() {
-        $scorePlayer = 0;
-        $scoreDealer = 0;
-        echo "<h1>Player</h1><br>";
-        foreach($this->player->getCards() AS $card) {
-            echo $card->getUnicodeCharacter(true);
-            echo '<br>';
-            $scorePlayer += $card->getValue();
-        }
-        echo "<h1>Score: {$scorePlayer}</h1><br>";
-        echo "<h1>Dealer</h1><br>";
-        foreach($this->dealer->getCards() AS $card) {
-            echo $card->getUnicodeCharacter(true);
-            echo '<br>';
-            $scoreDealer += $card->getValue();
-        }
-        echo "<h1>Score: {$scoreDealer}</h1><br>";
-    }
-
 }
