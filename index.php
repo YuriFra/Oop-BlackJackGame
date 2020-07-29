@@ -9,9 +9,12 @@ require 'Player.php';
 
 session_start();
 
+const BLACKJACK = 21;
+
 if (!isset($_SESSION['game'])) {
     $_SESSION['game'] = new Blackjack();
 }
+
 if (isset($_POST['input'])) {
     $_SESSION['bet'] = $_POST['input'];
 }
@@ -25,6 +28,11 @@ var_dump($_COOKIE);
 
 require 'form.php';
 
+//output html result
+$win = "<h3 class='text-center'>You win</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
+$lose = "<h3 class='text-center'>You lose</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
+$tie = "<h3 class='text-center'>It's a tie</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
+
 if ($_GET['action'] === 'hit') {
     $_SESSION['game']->getPlayer()->Hit();
 }
@@ -35,25 +43,38 @@ if ($_GET['action'] === 'surrender') {
     $_SESSION['game']->getPlayer()->Surrender();
 }
 if ($_SESSION['game']->getPlayer()->hasLost()) {
-    echo "<h3 class='text-center'>You lose</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
+    echo $lose;
     session_destroy();
 }
 
 $scorePlayer = $_SESSION['game']->getPlayer()->getScore()[0];
 $scoreDealer = $_SESSION['game']->getDealer()->getScore()[1];
 
+//first turn rule
+if (!isset($_GET['action'])) {
+    if ($scoreDealer === BLACKJACK && $scorePlayer === BLACKJACK) {
+        echo $tie;
+        session_destroy();
+    } elseif ($scorePlayer === BLACKJACK || $scoreDealer > BLACKJACK) {
+        echo $win;
+        session_destroy();
+    } elseif ($scoreDealer === BLACKJACK || $scorePlayer > BLACKJACK) {
+        echo $lose;
+        session_destroy();
+    }
+}
+
 if ($_GET['action'] === 'stand') {
-    if ($scoreDealer > 21 && $scorePlayer > 21) {
+    if ($scoreDealer > BLACKJACK && $scorePlayer > BLACKJACK) {
         $_SESSION['game']->getPlayer()->Surrender();
     }
-    if ($scoreDealer <= 21 && $scoreDealer >= $scorePlayer) {
+    if ($scoreDealer <= BLACKJACK && $scoreDealer >= $scorePlayer) {
         $_SESSION['game']->getPlayer()->Surrender();
     }
     if (!$_SESSION['game']->getPlayer()->hasLost()){
-        //$chipsLeft += ($_SESSION['bet'] * 2);
-        echo "<h3 class='text-center my-2'>You win</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
+        echo $win;
     } else {
-        echo "<h3 class='text-center my-2'>You lose</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
+        echo $lose;
     }
     session_destroy();
 }

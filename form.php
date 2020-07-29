@@ -12,7 +12,13 @@
 <header>
     <div class="row m-2">
         <?php
+        $scorePlayer = $_SESSION['game']->getPlayer()->getScore()[0];
+        $scoreDealer = $_SESSION['game']->getDealer()->getScore()[1];
         $chipsLeft = $_SESSION['game']->getPlayer()->getChips() - ($_SESSION['bet'] ?? 0);
+        if ($scorePlayer === BLACKJACK) {
+            $chipsLeft += 10;
+        } elseif ($scoreDealer === BLACKJACK) {
+        $chipsLeft -= 5;}
         echo "<h3 class='m-3'>Chips: {$chipsLeft}</h3>"; ?>
         <form class='form-inline' method="post">
             <label for="input"></label>

@@ -15,8 +15,8 @@ class Player {
         for($i = 0; $i < 2; $i++) {
             $this->cards[] = $deck->drawCard();
         }
-        $x = $_COOKIE['chips'] ?? (string)100;
-        $this->chips = (int)$x;
+        $cookie = $_COOKIE['chips'] ?? (string)100;
+        $this->chips = (int)$cookie;
     }
 
     /**
@@ -61,7 +61,6 @@ class Player {
     {
         return $this->chips;
     }
-
 }
 
 class Dealer extends Player {
