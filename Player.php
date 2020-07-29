@@ -4,6 +4,7 @@ declare(strict_types=1);
 class Player {
     private array $cards;
     private bool $lost = false;
+    private int $chips;
 
     /**
      * Player constructor.
@@ -50,6 +51,15 @@ class Player {
     public function hasLost() : bool {
         return ($this->lost);
     }
+
+    /**
+     * @return int
+     */
+    public function getChips(): int
+    {
+        return $this->chips;
+    }
+
 }
 
 class Dealer extends Player {
