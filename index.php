@@ -12,34 +12,18 @@ session_start();
 if (!isset($_SESSION['game'])) {
     $_SESSION['game'] = new Blackjack();
 }
-?>
+if (isset($_POST['input'])) {
+    $_SESSION['bet'] = $_POST['input'];
+}
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" type="text/css" rel="stylesheet"/>
-    <title>BlackJackGame</title>
-</head>
-<body>
-    <header>
-        <div class="row m-2">
-        <?php
-        $chipsLeft = 100;
-        echo "<h3 class='m-3'>Chips: {$chipsLeft}</h3>"; ?>
-        <form class='form-inline'>
-            <label for="input"></label>
-            <input type='number' id="input" class='form-control mx-3' min='5' max='<?= $chipsLeft ?>' step='5' placeholder='Place a bet >= 5'>
-            <button type='submit' class='btn btn-danger'>Submit</button>
-        </form></div>
-        <h1 class="text-center my-3">BlackJack Game</h1>
-    </header>
+//set cookie to store bet
+$cookie_name = 'chips';
+$chipsLeft = $_SESSION['game']->getPlayer()->getChips() - ($_SESSION['bet'] ?? 0);
+$cookie_value = $chipsLeft;
+setcookie($cookie_name, (string)$cookie_value, time() + (120), "/");
+var_dump($_COOKIE);
 
-<?php
-include 'form.html';
+require 'form.php';
 
 if ($_GET['action'] === 'hit') {
     $_SESSION['game']->getPlayer()->Hit();
@@ -66,6 +50,7 @@ if ($_GET['action'] === 'stand') {
         $_SESSION['game']->getPlayer()->Surrender();
     }
     if (!$_SESSION['game']->getPlayer()->hasLost()){
+        //$chipsLeft += ($_SESSION['bet'] * 2);
         echo "<h3 class='text-center my-2'>You win</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
     } else {
         echo "<h3 class='text-center my-2'>You lose</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
