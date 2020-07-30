@@ -1,5 +1,8 @@
 <?php
 declare(strict_types=1);
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
 
 require 'Suit.php';
 require 'Card.php';
@@ -28,27 +31,31 @@ var_dump($_COOKIE);
 
 require 'form.php';
 
+//button actions
+if(isset($_GET['action'])) {
+    if ($_GET['action'] === 'hit') {
+        $_SESSION['game']->getPlayer()->Hit();
+    }
+    if ($_GET['action'] === 'stand') {
+        $_SESSION['game']->getDealer()->Hit();
+    }
+    if ($_GET['action'] === 'surrender') {
+        $_SESSION['game']->getPlayer()->Surrender();
+    }
+}
+
 //output html result
 $win = "<h3 class='text-center'>You win</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
 $lose = "<h3 class='text-center'>You lose</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
 $tie = "<h3 class='text-center'>It's a tie</h3><div class='text-center'><a class='badge badge-primary' href='index.php'>Play again</a></div>";
 
-if ($_GET['action'] === 'hit') {
-    $_SESSION['game']->getPlayer()->Hit();
-}
-if ($_GET['action'] === 'stand') {
-    $_SESSION['game']->getDealer()->Hit();
-}
-if ($_GET['action'] === 'surrender') {
-    $_SESSION['game']->getPlayer()->Surrender();
-}
 if ($_SESSION['game']->getPlayer()->hasLost()) {
     echo $lose;
     session_destroy();
 }
 
-$scorePlayer = $_SESSION['game']->getPlayer()->getScore()[0];
-$scoreDealer = $_SESSION['game']->getDealer()->getScore()[1];
+$scorePlayer = $_SESSION['game']->getPlayer()->getScore();
+$scoreDealer = $_SESSION['game']->getDealer()->getScore();
 
 //first turn rule
 if (!isset($_GET['action'])) {
@@ -63,20 +70,22 @@ if (!isset($_GET['action'])) {
         session_destroy();
     }
 }
-
-if ($_GET['action'] === 'stand') {
-    if ($scoreDealer > BLACKJACK && $scorePlayer > BLACKJACK) {
-        $_SESSION['game']->getPlayer()->Surrender();
+//output stand result
+else {
+    if ($_GET['action'] === 'stand') {
+        if ($scoreDealer > BLACKJACK && $scorePlayer > BLACKJACK) {
+            $_SESSION['game']->getPlayer()->Surrender();
+        }
+        if ($scoreDealer <= BLACKJACK && $scoreDealer >= $scorePlayer) {
+            $_SESSION['game']->getPlayer()->Surrender();
+        }
+        if (!$_SESSION['game']->getPlayer()->hasLost()) {
+            echo $win;
+        } else {
+            echo $lose;
+        }
+        session_destroy();
     }
-    if ($scoreDealer <= BLACKJACK && $scoreDealer >= $scorePlayer) {
-        $_SESSION['game']->getPlayer()->Surrender();
-    }
-    if (!$_SESSION['game']->getPlayer()->hasLost()){
-        echo $win;
-    } else {
-        echo $lose;
-    }
-    session_destroy();
 }
 
 //output player cards & score
@@ -87,11 +96,16 @@ foreach($_SESSION['game']->getPlayer()->getCards() AS $card) {
 }
 echo '</div></div>';
 
-//output dealer cards & score
-echo "<div class='col-6 text-center'><h1>Dealer</h1>
-      <h2>Score: {$scoreDealer}</h2><div class='d-flex flex-row justify-content-center'>";
-foreach($_SESSION['game']->getDealer()->getCards() AS $card) {
-    echo "{$card->getUnicodeCharacter(true)}<br>";
+//output dealer on draw 1 card & score
+echo "<div class='col-6 text-center'><h1>Dealer</h1>";
+if ((isset($_GET['action']) && $_GET['action'] === 'stand') || $_SESSION['game']->getPlayer()->hasLost()) {
+    echo "<h2>Score: {$scoreDealer}</h2><div class='d-flex flex-row justify-content-center'>";
+    foreach ($_SESSION['game']->getDealer()->getCards() as $card) {
+        echo "{$card->getUnicodeCharacter(true)}<br>";
+    }
+} else {
+    echo "<h2>Score: ?</h2><div class='d-flex flex-row justify-content-center'>
+          {$_SESSION['game']->getDealer()->getCards()[0]->getUnicodeCharacter(true)}<br>";
 }
 echo '</div></div></div></body></html>';
 
