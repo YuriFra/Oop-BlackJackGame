@@ -17,17 +17,13 @@ const BLACKJACK = 21;
 if (!isset($_SESSION['game'])) {
     $_SESSION['game'] = new Blackjack();
 }
-
 if (isset($_POST['input'])) {
     $_SESSION['bet'] = $_POST['input'];
 }
-
-//set cookie to store bet
-$cookie_name = 'chips';
-$chipsLeft = $_SESSION['game']->getPlayer()->getChips() - ($_SESSION['bet'] ?? 0);
-$cookie_value = $chipsLeft;
-setcookie($cookie_name, (string)$cookie_value, time() + (120), "/");
-var_dump($_COOKIE);
+if(!isset($_COOKIE['chips'])){
+    setcookie('chips', '100', time() + (120), "/");
+}
+$bet = isset($_SESSION['bet']) ? (int)$_SESSION['bet'] : 0;
 
 require 'form.php';
 
@@ -51,6 +47,8 @@ $tie = "<h3 class='text-center'>It's a tie</h3><div class='text-center'><a class
 
 if ($_SESSION['game']->getPlayer()->hasLost()) {
     echo $lose;
+    $chipStatus = (int)$_COOKIE['chips'] - $bet;
+    setcookie('chips', (string)$chipStatus);
     session_destroy();
 }
 
@@ -64,9 +62,13 @@ if (!isset($_GET['action'])) {
         session_destroy();
     } elseif ($scorePlayer === BLACKJACK || $scoreDealer > BLACKJACK) {
         echo $win;
+        $chipStatus = (int)$_COOKIE['chips'] + 10;
+        setcookie('chips', (string)$chipStatus);
         session_destroy();
     } elseif ($scoreDealer === BLACKJACK || $scorePlayer > BLACKJACK) {
         echo $lose;
+        $chipStatus = (int)$_COOKIE['chips'] - 5;
+        setcookie('chips', (string)$chipStatus);
         session_destroy();
     }
 }
@@ -81,8 +83,12 @@ else {
         }
         if (!$_SESSION['game']->getPlayer()->hasLost()) {
             echo $win;
+            $chipStatus = (int)$_COOKIE['chips'] + $bet;
+            setcookie('chips', (string)$chipStatus);
         } else {
             echo $lose;
+            $chipStatus = (int)$_COOKIE['chips'] - $bet;
+            setcookie('chips', (string)$chipStatus);
         }
         session_destroy();
     }

@@ -12,25 +12,17 @@
 <header>
     <div class="row m-2">
         <?php
-        $scorePlayer = $_SESSION['game']->getPlayer()->getScore();
-        $scoreDealer = $_SESSION['game']->getDealer()->getScore();
-        //$chipsLeft = $_SESSION['game']->getPlayer()->getChips() - ($_SESSION['bet'] ?? 0);
-        if (!isset($_GET['action'])) {
-            if ($scorePlayer === BLACKJACK) {
-                $chipsLeft += 10;
-            } elseif ($scoreDealer === BLACKJACK) {
-                $chipsLeft -= 5;
-            }
-        } elseif (isset($_GET['action']) ) {
-
+        if (!isset($_COOKIE['chips'])) {
+            $chipStatus = $_SESSION['game']->getPlayer()->getChips();
+        } else {
+            $chips = (int)$_COOKIE['chips'];
+            $bet = isset($_SESSION['bet']) ? (int)$_SESSION['bet'] : 0;
+            $chipStatus = $chips - $bet;
         }
-        if (isset($_GET['win'])) {
-            $chipsLeft += ($_SESSION['bet'] * 2);
-        }
-        echo "<h3 class='m-3'>Chips: {$chipsLeft}</h3>"; ?>
+        echo "<h3 class='m-3'>Chips: {$chipStatus}</h3>"; ?>
         <form class='form-inline' method="post">
             <label for="input"></label>
-            <input type='number' name="input" class='form-control mx-3' min='5' max='<?= $chipsLeft ?>' step='5' value="5">
+            <input type='number' name="input" class='form-control mx-3' min='5' max='<?= $chipStatus ?>' step='5' value="5">
             <button type='submit' class='btn btn-danger'>Place Bet</button>
         </form>
     </div>
