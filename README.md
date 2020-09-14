@@ -1,21 +1,18 @@
 # Oop-BlackJackGame
-Intro to object oriented programming
+A first dive into OOP (object oriented programming) in PHP
 
 - Repository: `php-blackjack`
 - Type of Challenge: `Learning challenge`
 - Duration: `3 days`
-- Team challenge : `Duo project`
+- Team challenge : `Nathan Van Gulck & Yuri Franken`
+- Our game:
 
-## Learning objectives
-- A first dive into OOP (object oriented programming)
+![blackjack](blackjack.png)
 
 ## The Mission
 Let's make a game in PHP: Blackjack!
-To keep the code structured we are going to use classes and objects.
 
-Your coach has provide you with some starter classes that you can use for the game, to help you out on your first OOP challenge. First spent some time reading these classes and really understand what they are doing. If something in the syntac is unclear, google it first and then ask your coach.
-
-If this is still an unclear subject for you don't feel bad to google some basic OOP articles, or ask your coach. it is normal that this feels difficult, because object oriented programming is a really complex subject!
+To keep the code structured we are going to use classes and objects. Your coach has provided you with some starter classes that you can use for the game, to help you out on your first OOP challenge.
 
 ### Getters
 You will see you will create a lot of functions that start with "get" to access a property in a class. Why not just make the property public?
@@ -78,7 +75,6 @@ TL;DR: Never use public properties, make getters!
     - `stand` does not have a method in the player class but will instead call hit on the `dealer` instance.
     - `hasLost` will return the bool of the lost property.
     
-#### Take a moment to enjoy the view
 Everything from the player is now done! Job well done!
 
 #### The dealer
@@ -108,6 +104,3 @@ All classes are ready, now you just need to write some minimal glue. The final r
      - If the player wins the bet he gains double the amount of chips.
 - Implement the blackjack first turn rule: if the player draws 21 the first turn: he directly wins. If the dealer draws 21 the first turn, he wins. If both draw it, it is a tie. 
     - When you implement both nice to have features, a blackjack means an auto win of 10 chips, a blackjack of the dealer a loss of 5 chips for the player.
-    
-## Tips
-Be sure to check the pre made classes and the [example.php](code/example.php) file. This file shows how you can easily get some graphical presentation for the cards to spice up your game!
